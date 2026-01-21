@@ -1,5 +1,4 @@
 theme: jekyll-theme-minimal
 title: Card Night Home Page
 description: Bookmark this to keep an eye on my project updates!
-exclude:
-  - _config.yml
+exclude: ["_config.yml"]
