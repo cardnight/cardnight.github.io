@@ -1,3 +1,5 @@
+---
+---
 <HTML>
 <head>
 <title>Card Night Results</title>
@@ -10,16 +12,7 @@
 
 <CENTER>
 
-<script>
-getText("_includes/header.html");
-
-async function getText(file) {
-  let x = await fetch(file);
-  let y = await x.text();
-  document.getElementById("demo").innerHTML = y;
-}
-</script>
-
+{% include header.html %}
 
 <br style="page-break-after:always;">
 
@@ -3560,5 +3553,6 @@ order to qualify as a leader.
 
 </BODY>
 </HTML>
+
 
 
