@@ -10,13 +10,13 @@ window.onload=countdown;
 //Wednesday (Tuesday PT).
 //For a specific Card Night, td will hold the day of the month (again, in GMT)
 
-td = 3;
+td = 12;
 
 //th holds the hour (in GMT) of the next Card Night.
 //For 7:00 p.m. PST, th will be 3 (GMT 0300)
 //For 7:00 p.m. PDT, th will be 2 (GMT 0200)
 
-th = 3;
+th = 2;
 
 tm = 0;
 ts = 0;
@@ -73,7 +73,7 @@ function countdown() {
 //In the case of a specific Card Night:
 //   nd = nd + td - n.getDate();
 
-   nd = nd + td - n.getDay();
+   nd = nd + td - n.getDate();
 
    if(nd < 0) {
 //In the case of a recurring Card Night, we'll just add 7 days:
@@ -82,7 +82,7 @@ function countdown() {
 //month prior to the Card Night:
 //      nd = nd + 30;
 
-      nd = nd + 7;
+      nd = nd + 28;
 
    }
    t.d.value = nd;
