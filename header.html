@@ -10,7 +10,7 @@ window.onload=countdown;
 //Wednesday (Tuesday PT).
 //For a specific Card Night, td will hold the day of the month (again, in GMT)
 
-td = 12;
+td = 3;
 
 //th holds the hour (in GMT) of the next Card Night.
 //For 7:00 p.m. PST, th will be 3 (GMT 0300)
@@ -73,7 +73,7 @@ function countdown() {
 //In the case of a specific Card Night:
 //   nd = nd + td - n.getDate();
 
-   nd = nd + td - n.getDate();
+   nd = nd + td - n.getDay();
 
    if(nd < 0) {
 //In the case of a recurring Card Night, we'll just add 7 days:
@@ -82,7 +82,7 @@ function countdown() {
 //month prior to the Card Night:
 //      nd = nd + 30;
 
-      nd = nd + 28;
+     nd = nd + 7;
 
    }
    t.d.value = nd;
@@ -136,7 +136,7 @@ sds[25]="<a href=http://cardnight.github.io/ike.html><font color=white>Uncle Ike
 sds[26]="It took <a href=http://cardnight.github.io/glen.html><font color=white>Glen</font></a> an entire year of attending Card Night before <a href=http://cardnight.wordpress.com/2009/09/15/card-night-15-sep-2009/><font color=white>he won his first</font></a> <a href=http://cardnight.github.io/poker_games.html#jackpot><font color=white>jackpot</font></a>.";
 sds[27]="<a href=http://cardnight.github.io/bill_c.html><font color=white>Bill C</font></a>, <a href=http://cardnight.github.io/jeff.html><font color=white>Jeff</font></a>, <a href=http://cardnight.github.io/joe_h.html><font color=white>Joe H</font></a>, and <a href=http://cardnight.github.io/joe_z.html><font color=white>Joe Z</font></a> won <a href=http://cardnight.github.io/poker_games.html#jackpot><font color=white>jackpot</font></a> on the first Card Night each of them attended.";
 sds[28]="<a href=http://cardnight.github.io/mike_c.html><font color=white>Mike C</font></a> now lives in Las Vegas.";
-sds[29]="<a href=http://cardnight.github.io/mark_d.html><font color=white>Mark D</font></a> once won $1,244.00 over a <a href=http://cardnight.github.io/best_worst_10.html><font color=white>period of ten attended Card Nights</font></a>.";
+sds[29]="<a href=http://cardnight.github.io/david_d.html><font color=white>David D</font></a> once won $1,336.00 over a <a href=http://cardnight.github.io/best_worst_10.html><font color=white>period of ten attended Card Nights</font></a>.";
 sds[30]="<a href=http://cardnight.github.io/mary.html><font color=white>Mary</font></a> missed 259 <a href=http://cardnight.github.io/miss.html><font color=white>consecutive Card Nights</font></a> between 2018 and 2025.";
 sds[31]="You cannot win <a href=http://cardnight.github.io/poker_games.html#jackpot><font color=white>jackpot</font></a> on the extra-quarters <a href=http://cardnight.github.io/poker_games.html#showdown><font color=white>showdown</font></a> at the end of the night.";
 sds[32]="<a href=http://cardnight.github.io/mary.html><font color=white>Mary</font></a> only missed one Card Night when she <a href=http://cardnight.wordpress.com/2006/09/06/clare-anne-farrell/><font color=white>gave birth to Clare</font></a>.";
@@ -498,7 +498,6 @@ printDidYouKnow();
 
 	<li><a href="http://cardnight.github.io/calendar.html">Calendar</a></li>
 
-<!--
         <li><a href="http://cardnight.github.io/cgi-bin/results.cgi">Football&nbsp;Pool</a>
 		<ul>
 			<li><a href="http://cardnight.github.io/cgi-bin/entry.cgi">Enter&nbsp;Picks</a></li>
@@ -525,11 +524,9 @@ printDidYouKnow();
 			<li><a href="http://cardnight.github.io/nfl01/nfl01.html">2001&nbsp;Results</a></li>
 		</ul>
 	</li>
--->
 
 	<li><a href="http://cardnight.github.io/poker_games.html">Poker&nbsp;Games</a></li>
 
-<!--
    <li><a href="http://cardnight.github.io/ncaa17.html">NCAA&nbsp;Pool</a>
 		<ul>
 			<li><a href="http://cardnight.github.io/ncaa17.html">Latest&nbsp;Results</a></li>
@@ -554,7 +551,6 @@ printDidYouKnow();
 			<li><a href="http://cardnight.github.io/ncaa01.html">2001&nbsp;Results</a></li>
 		</ul>
 	</li>
--->
 
 <!--	
     <li><a href="#">Miscellaneous</a>
