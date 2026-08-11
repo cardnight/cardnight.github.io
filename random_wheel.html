@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Wheel</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f4f6;
+    color: #222;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+  }
+  .app {
+    width: min(1000px, 100%);
+    background: white;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 10px 35px rgba(0,0,0,.12);
+  }
+  h1 {
+    text-align: center;
+    margin: 0 0 20px;
+    font-size: 32px;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 28px;
+    align-items: center;
+  }
+  .wheel-area {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 12px;
+  }
+  canvas {
+    width: min(620px, 100%);
+    height: auto;
+    display: block;
+  }
+  .pointer {
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-top: 38px solid #111;
+    z-index: 2;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+  }
+  .controls {
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 18px;
+  }
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  textarea {
+    width: 100%;
+    min-height: 220px;
+    resize: vertical;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 12px;
+    font: inherit;
+    line-height: 1.5;
+  }
+  button {
+    width: 100%;
+    border: 0;
+    border-radius: 10px;
+    padding: 13px 16px;
+    margin-top: 10px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  #spinBtn {
+    background: #111827;
+    color: white;
+  }
+  #spinBtn:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+  }
+  #updateBtn {
+    background: #e2e8f0;
+    color: #111827;
+  }
+  .result {
+    margin-top: 16px;
+    min-height: 58px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    border-radius: 10px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 10px;
+  }
+  .hint {
+    margin: 10px 0 0;
+    font-size: 13px;
+    color: #64748b;
+  }
+  @media (max-width: 800px) {
+    .layout { grid-template-columns: 1fr; }
+    .controls { max-width: 620px; width: 100%; margin: 0 auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <h1>Random Wheel</h1>
+
+  <div class="layout">
+    <div class="wheel-area">
+      <div class="pointer"></div>
+      <canvas id="wheel" width="620" height="620"></canvas>
+    </div>
+
+    <div class="controls">
+      <label for="entries">Choices</label>
+      <textarea id="entries">.25-.50-$1.00
+2-11 POKER
+2-7 TRIPLE DRAW
+7&#189;-21&#189;
+7-27
+ACCORDION HOLD 'EM
+ACCORDION OMAHA
+BADACEY
+BADEUCEY
+BADUGI
+BASEBALL
+BUCK 'EM
+CONSTRUCTION
+CRAZY PINEAPPLE
+CRISS-CROSS ROLL 'EM
+DRAWMAHA
+DRAWMAHA 0
+DRAWMAHA 2-7
+DRAWMAHA 21
+DRAWMAHA 49
+DRAWMAHA BADUGI
+DRAWMAHA RED BLACK
+FIVE-CARD DRAW
+FIVE-CARD STUD
+FOLLOW THE QUEEN
+FOUR QUEENS
+BINGO
+LOW HOLEY, HIGH CHICAGO
+LOW HOLEY
+OMAHA HIGH
+OMAHA HI-LO
+BIG O
+COURCHEVEL
+PASS THE BUCK
+PIPS
+PIPSDUGI
+QUEENIE
+SUPER STUD HI-LO REG
+QUEENIE BASEBALL
+ACTION RAZZ
+RAZZ
+ROLL YOUR OWN
+SCREW YOUR NEIGHBOR
+SEVEN-CARD STUD
+STUD 8
+TEXAS HOLD 'EM
+TY'S 7S
+WILD CARDS BOTH WAYS
+</textarea>
+
+      <button id="updateBtn">UPDATE WHEEL</button>
+      <button id="spinBtn">SPIN!</button>
+
+      <div class="result" id="result">Ready to spin</div>
+      <p class="hint">Enter one choice per line. The winner is selected randomly.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
+const textarea = document.getElementById("entries");
+const updateBtn = document.getElementById("updateBtn");
+const spinBtn = document.getElementById("spinBtn");
+const result = document.getElementById("result");
+
+let items = [];
+let rotation = 0;
+let spinning = false;
+
+const colors = [
+  "#ef4444", "#f97316", "#f59e0b", "#84cc16",
+  "#22c55e", "#14b8a6", "#06b6d4", "#3b82f6",
+  "#6366f1", "#8b5cf6", "#a855f7", "#ec4899"
+];
+
+function getItems() {
+  return textarea.value
+    .split("\n")
+    .map(x => x.trim())
+    .filter(Boolean);
+}
+
+function drawWheel() {
+  items = getItems();
+  const count = items.length;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (!count) {
+    ctx.beginPath();
+    ctx.arc(310, 310, 280, 0, Math.PI * 2);
+    ctx.fillStyle = "#e5e7eb";
+    ctx.fill();
+    ctx.fillStyle = "#6b7280";
+    ctx.font = "bold 24px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Add some choices", 310, 310);
+    return;
+  }
+
+  const cx = 310;
+  const cy = 310;
+  const radius = 285;
+  const slice = (Math.PI * 2) / count;
+
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(rotation);
+
+  for (let i = 0; i < count; i++) {
+    const start = i * slice;
+    const end = start + slice;
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, radius, start, end);
+    ctx.closePath();
+
+    ctx.fillStyle = colors[i % colors.length];
+    ctx.fill();
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Label
+    ctx.save();
+    ctx.rotate(start + slice / 2);
+
+    const fontSize = Math.max(12, Math.min(22, 280 / Math.max(count, 6)));
+    ctx.font = `bold ${fontSize}px Arial`;
+    ctx.fillStyle = "#fff";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "middle";
+    ctx.shadowColor = "rgba(0,0,0,.35)";
+    ctx.shadowBlur = 3;
+
+    let label = items[i];
+    const maxChars = 50;
+    if (label.length > maxChars) label = label.substring(0, maxChars - 1) + "…";
+
+    ctx.fillText(label, radius - 18, 0);
+    ctx.restore();
+  }
+
+  ctx.restore();
+
+  // Center hub
+  ctx.beginPath();
+  ctx.arc(cx, cy, 42, 0, Math.PI * 2);
+  ctx.fillStyle = "#111827";
+  ctx.fill();
+  ctx.strokeStyle = "#fff";
+  ctx.lineWidth = 5;
+  ctx.stroke();
+
+  ctx.fillStyle = "#fff";
+  ctx.font = "bold 15px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("SPIN", cx, cy);
+}
+
+function updateWheel() {
+  if (spinning) return;
+  items = getItems();
+  result.textContent = items.length ? "Ready to spin" : "Add at least one choice";
+  drawWheel();
+}
+
+function easeOut(t) {
+  return 1 - Math.pow(1 - t, 4);
+}
+
+function spin() {
+  if (spinning) return;
+
+  items = getItems();
+  if (!items.length) {
+    result.textContent = "Add at least one choice";
+    return;
+  }
+
+  spinning = true;
+  spinBtn.disabled = true;
+  updateBtn.disabled = true;
+  result.textContent = "Spinning";
+
+  const count = items.length;
+  const slice = (Math.PI * 2) / count;
+
+  // Choose the winner first, then calculate rotation so that
+  // the chosen slice ends under the top pointer.
+  const winner = Math.floor(Math.random() * count);
+
+  // Slice center relative to wheel's zero-angle position.
+  const targetCenter = winner * slice + slice / 2;
+
+  // Pointer is at -PI/2. Add many full rotations for the animation.
+  const desiredRotation = -Math.PI / 2 - targetCenter;
+  const turns = 6 + Math.floor(Math.random() * 3);
+
+  // Choose an equivalent angle ahead of the current rotation.
+  let finalRotation = desiredRotation + turns * Math.PI * 2;
+  while (finalRotation <= rotation + Math.PI * 2) {
+    finalRotation += Math.PI * 2;
+  }
+
+  const startRotation = rotation;
+  const change = finalRotation - startRotation;
+  const duration = 4800 + Math.random() * 1000;
+  const startTime = performance.now();
+
+  function animate(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    rotation = startRotation + change * easeOut(progress);
+
+    drawWheel();
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      rotation = finalRotation;
+      drawWheel();
+      result.textContent = items[winner];
+      spinning = false;
+      spinBtn.disabled = false;
+      updateBtn.disabled = false;
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+
+updateBtn.addEventListener("click", updateWheel);
+spinBtn.addEventListener("click", spin);
+
+textarea.addEventListener("input", () => {
+  if (!spinning) drawWheel();
+});
+
+drawWheel();
+</script>
+
+</body>
+</html>
