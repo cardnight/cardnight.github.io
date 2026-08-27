@@ -1,4 +1,20 @@
 <script language="javascript">
+<!-- Copyright 2002 Bontrager Connection, LLC
+//
+// Type the number of images you are rotating.
+
+NumberOfImagesToRotateMain = 4;
+
+// Specify the first and last part of the image tag.
+
+FirstPartMain = '<img src="https://cardnight.github.io/new_logo';
+LastPartMain = '.png" border=0 height=175>';
+
+function printImageMain() {
+var r = Math.ceil(Math.random() * NumberOfImagesToRotateMain);
+document.write(FirstPartMain + r + LastPartMain);
+}
+//-->
 
 window.onload=countdown;
 
@@ -355,7 +371,11 @@ if (window.attachEvent) window.attachEvent("onload", sfHover);
 
 <table border=0 width=100% bgcolor=#10106B>
     <tr align=center>
-        <td><a href="http://cardnight.github.io/index.html"><img border=0 height=175 src=http://cardnight.github.io/new_logo4.png></a></td>
+        <td><a href="http://cardnight.github.io/index.html">
+<script type="text/javascript" language="JavaScript"><!--
+printImageMain();
+//--></script>
+        </a></td>
         <td align=right>
             <table border=1><tr>
 
