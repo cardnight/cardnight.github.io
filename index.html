@@ -15,7 +15,7 @@ NumberOfImagesToRotateMain = 8;
 FirstPartMain = '<img src="player';
 LastPartMain = '.jpg" width=500>';
 
-function printImageMain() {
+function printPortrait() {
 var r = Math.ceil(Math.random() * NumberOfImagesToRotateMain);
 document.write(FirstPartMain + r + LastPartMain);
 }
@@ -44,7 +44,7 @@ document.write(FirstPartMain + r + LastPartMain);
 
 <img src=intro.gif><br>
 <script type="text/javascript" language="JavaScript"><!--
-printImageMain();
+printPortrait();
 //--></script>
 
 
