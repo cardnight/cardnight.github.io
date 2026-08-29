@@ -8,16 +8,16 @@
 //
 // Type the number of images you are rotating.
 
-NumberOfImagesToRotateMain = 8;
+NumberOfPortraitsToRotateMain = 8;
 
 // Specify the first and last part of the image tag.
 
-FirstPartMain = '<img src="player';
-LastPartMain = '.jpg" width=500>';
+FirstPortraitMain = '<img src="player';
+LastPortratMain = '.jpg" width=500>';
 
 function printPortrait() {
-var r = Math.ceil(Math.random() * NumberOfImagesToRotateMain);
-document.write(FirstPartMain + r + LastPartMain);
+var r = Math.ceil(Math.random() * NumberOfPortraitsToRotateMain);
+document.write(FirstPortraitMain + r + LastPortratMain);
 }
 //-->
 </script>
